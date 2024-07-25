@@ -3,7 +3,7 @@ import { defineStore } from "pinia";
 export const useWebSocketStore = defineStore("websocket", {
   state: () => ({
     websocket: null,
-    wsMessage: null,
+    wsMessages: [],
     wsStatus: "closed", // open, closed, error
     wsError: null,
   }),
@@ -17,8 +17,8 @@ export const useWebSocketStore = defineStore("websocket", {
       };
 
       this.websocket.onmessage = (message) => {
-        console.log("Message from server", message.data);
-        this.wsMessage = message;
+        // console.log("Message from server", message);
+        this.wsMessages.push(message.data);
       };
 
       this.websocket.onclose = () => {
@@ -33,6 +33,7 @@ export const useWebSocketStore = defineStore("websocket", {
     },
     sendMessage(message) {
       if (this.websocket && this.wsStatus === "open") {
+        console.log("Message sent is", message);
         this.websocket.send(message);
       } else {
         console.warn("WebSocket connection is not open. Message not sent");
