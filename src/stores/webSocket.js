@@ -18,7 +18,7 @@ export const useWebSocketStore = defineStore("websocket", {
 
       this.websocket.onmessage = (message) => {
         // console.log("Message from server", message);
-        this.wsMessages.push(message.data);
+        this.wsMessages.push(JSON.parse(message.data));
       };
 
       this.websocket.onclose = () => {
@@ -33,11 +33,24 @@ export const useWebSocketStore = defineStore("websocket", {
     },
     sendMessage(message) {
       if (this.websocket && this.wsStatus === "open") {
-        console.log("Message sent is", message);
-        this.websocket.send(message);
+        const messageData = {
+          timeStamp: getTimeNow(),
+          message: message,
+        };
+        console.log("Message sent is", messageData);
+        this.websocket.send(JSON.stringify(messageData));
       } else {
         console.warn("WebSocket connection is not open. Message not sent");
       }
     },
   },
 });
+
+const getTimeNow = () => {
+  const now = new Date();
+  const hours = now.getHours();
+  const minutes = now.getMinutes();
+  const seconds = now.getSeconds();
+
+  return `${hours}:${minutes}:${seconds}`;
+};

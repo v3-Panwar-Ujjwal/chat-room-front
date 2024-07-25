@@ -8,6 +8,7 @@ const wsStore = useWebSocketStore();
 const message = ref("");
 
 const send = () => {
+  message.value = message.value.trim();
   wsStore.sendMessage(message.value);
   message.value = ""; // Clear the input after sending
 };
