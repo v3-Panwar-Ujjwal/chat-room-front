@@ -48,9 +48,9 @@ export const useWebSocketStore = defineStore("websocket", {
 
 const getTimeNow = () => {
   const now = new Date();
-  const hours = String(now.getHours()).padStart(2, "0");
+  const hours = String(now.getHours() % 12).padStart(2, "0");
   const minutes = String(now.getMinutes()).padStart(2, "0");
-  // const seconds = now.getSeconds();
+  const seconds = String(now.getSeconds()).padStart(2, "0");
 
-  return `${hours}:${minutes}`;
+  return `${hours}:${minutes}:${seconds}`;
 };
