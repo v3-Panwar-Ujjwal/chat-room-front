@@ -6,6 +6,7 @@ export const useWebSocketStore = defineStore("websocket", {
     wsMessages: [],
     wsStatus: "closed", // open, closed, error
     wsError: null,
+    clientId: null,
   }),
   actions: {
     initWebSocket() {
@@ -18,7 +19,13 @@ export const useWebSocketStore = defineStore("websocket", {
 
       this.websocket.onmessage = (message) => {
         // console.log("Message from server", message);
-        this.wsMessages.push(JSON.parse(message.data));
+        const messageData = JSON.parse(message.data);
+        if (messageData.type === "init") {
+          this.clientId = messageData.id;
+          console.log("clientId is", this.clientId);
+        } else {
+          this.wsMessages.push(messageData);
+        }
       };
 
       this.websocket.onclose = () => {
@@ -36,6 +43,7 @@ export const useWebSocketStore = defineStore("websocket", {
         const messageData = {
           timeStamp: getTimeNow(),
           message: message,
+          clientId: this.clientId,
         };
         console.log("Message sent is", messageData);
         this.websocket.send(JSON.stringify(messageData));
@@ -48,9 +56,20 @@ export const useWebSocketStore = defineStore("websocket", {
 
 const getTimeNow = () => {
   const now = new Date();
-  const hours = String(now.getHours() % 12).padStart(2, "0");
-  const minutes = String(now.getMinutes()).padStart(2, "0");
-  const seconds = String(now.getSeconds()).padStart(2, "0");
 
-  return `${hours}:${minutes}:${seconds}`;
+  // Get hours, minutes, seconds
+  const hours = now.getHours();
+  const minutes = now.getMinutes().toString().padStart(2, "0");
+  const seconds = now.getSeconds().toString().padStart(2, "0");
+
+  // Determine AM or PM
+  const period = hours >= 12 ? "PM" : "AM";
+
+  // Convert hours to 12-hour format
+  const formattedHours = hours % 12 || 12;
+
+  // Format the time string
+  const formattedTime = `${formattedHours}:${minutes}:${seconds}:${period}`;
+
+  return formattedTime;
 };

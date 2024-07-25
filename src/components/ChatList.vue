@@ -10,13 +10,13 @@ const messages = computed(() => {
 });
 </script>
 <template>
-    <ul>
-      <li v-for="(message, index) in messages" :key="index">
-        <ChatMessage
-          :message="message['message']"
-          :timeStamp="message['timeStamp']"
-          username="Username"
-        />
-      </li>
-    </ul>
+  <ul>
+    <li v-for="(message, index) in messages" :key="index">
+      <ChatMessage
+        :message="message['message']"
+        :timeStamp="message['timeStamp']"
+        :username="message['clientId']"
+      />
+    </li>
+  </ul>
 </template>
