@@ -16,6 +16,7 @@ const send = () => {
 <template>
   <div class="h-[10%] flex gap-x-4">
     <textarea
+      @keydown.enter.exact.prevent="send"
       v-model="message"
       maxlength="250"
       class="resize-none focus:outline-none grow border-2 border-gray-50 bg-transparent rounded-lg p-2 text-gray-200"
